@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template
-import markdown2
+import markdown
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
@@ -15,24 +15,28 @@ def index(path):
 
 def get_md_contents(path, url_tmpl):
     slash = path.find('/')
-    extras = ["fenced-code-blocks","target-blank-links","tables"]
     if slash >= 0:
         if path.lower().endswith(".md"):
             url = url_tmpl % path[slash+1:]
             r = requests.get(url)
             print(r.status_code, url)
             if r.status_code == 200 and r.text:
-                html = markdown2.markdown(r.text, extras=extras)
-                html = '<html><head></head><body>%s</body></html>' % html
+                extensions = ['markdown.extensions.extra',
+                              'markdown.extensions.attr_list',
+                              'markdown.extensions.fenced_code',
+                              'markdown.extensions.codehilite',
+                ]
+                html = markdown.markdown(r.text, extensions=extensions)
+                #html = '<html><head></head><body>%s</body></html>' % html
                 soup = BeautifulSoup(html, features="html.parser")
-                style = soup.new_tag('style')
-                style.string = 'img { max-width: 100%; height: auto;}'
-                soup.head.append(style)
+                #style = soup.new_tag('style')
+                #style.string = 'img { max-width: 100%; height: auto;}'
+                #soup.head.append(style)
                 is_relative = lambda x: not x.startswith('http')
                 absolute = url[:url.rfind('/')]+'/'
                 for e in soup.find_all("img", src=is_relative):
                     e['src'] = urllib.parse.urljoin(absolute, e['src'])
-                return str(soup)
+                return render_template('md.html', text=str(soup))
             else:
                 #print("Fail to load the url!")
                 return page_not_found("Fail to load the url!")
