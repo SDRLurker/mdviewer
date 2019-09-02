@@ -25,6 +25,7 @@ def get_md_contents(path, url_tmpl):
                               'markdown.extensions.attr_list',
                               'markdown.extensions.fenced_code',
                               'markdown.extensions.codehilite',
+                              'mdx_math',
                 ]
                 html = markdown.markdown(r.text, extensions=extensions)
                 #html = '<html><head></head><body>%s</body></html>' % html
