@@ -16,7 +16,7 @@ def index(path):
 def get_md_contents(path, url_tmpl):
     slash = path.find('/')
     if slash >= 0:
-        if path.lower().endswith(".md"):
+        if path.lower().endswith(".md") or path.lower().endswith("/raw"):
             url = url_tmpl % path[slash+1:]
             r = requests.get(url)
             print(r.status_code, url)
