@@ -13,6 +13,14 @@ def page_not_found(error):
 def index(path):
     return "I am index"
 
+def get_space_size(s):
+    sz = 4
+    for line in s.splitlines():
+        ls = len(line) - len(line.lstrip())
+        if ls > 0:
+            return ls
+    return sz
+
 def get_md_contents(path, url_tmpl):
     slash = path.find('/')
     if slash >= 0:
@@ -26,13 +34,11 @@ def get_md_contents(path, url_tmpl):
                               'markdown.extensions.fenced_code',
                               'markdown.extensions.codehilite',
                               'mdx_math',
-                ]
-                html = markdown.markdown(r.text, extensions=extensions)
-                #html = '<html><head></head><body>%s</body></html>' % html
+				]
+                s = str(r.text)
+                tab_length = get_space_size(s)
+                html = markdown.markdown(s, extensions=extensions, tab_length=tab_length)
                 soup = BeautifulSoup(html, features="html.parser")
-                #style = soup.new_tag('style')
-                #style.string = 'img { max-width: 100%; height: auto;}'
-                #soup.head.append(style)
                 is_relative = lambda x: not x.startswith('http')
                 absolute = url[:url.rfind('/')]+'/'
                 for e in soup.find_all("img", src=is_relative):
