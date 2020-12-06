@@ -11,7 +11,7 @@ def page_not_found(error):
 	return render_template('page_not_found.html'), 404
 
 def index(path):
-    return "I am index"
+    return render_template('index.html')
 
 def get_space_size(s):
     sz = 4
