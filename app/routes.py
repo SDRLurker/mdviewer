@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template
+from flask import render_template, request
 import markdown
 import requests
 from bs4 import BeautifulSoup
@@ -70,3 +70,15 @@ def path_func(path):
     first = folders[0] if len(folders) > 0 else ""
     return route_dic.get(first, page_not_found)(path)
     #return 'You want path: %s' % path
+
+@app.route("/create/", methods=['POST'])
+def create():
+	url = request.form['gistnorurl']
+	try:
+		r = requests.get(url)
+		if r.status_code == 200 and r.text:
+			soup = BeautifulSoup(r.text, features="html.parser")
+			print(soup)
+	except:
+		return page_not_found("Could'nt find the url!")
+	return page_not_found("Could'nt find the url!")
