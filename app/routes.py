@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request
+from flask import render_template, request, redirect
 import markdown
 import requests
 from bs4 import BeautifulSoup
@@ -74,11 +74,31 @@ def path_func(path):
 @app.route("/create/", methods=['POST'])
 def create():
 	url = request.form['gistnorurl']
-	try:
-		r = requests.get(url)
-		if r.status_code == 200 and r.text:
-			soup = BeautifulSoup(r.text, features="html.parser")
-			print(soup)
-	except:
-		return page_not_found("Could'nt find the url!")
+	parts = urllib.parse.urlparse(url)
+	paths = parts.path.split("/")
+	if len(paths) > 5:
+		userid = paths[1]
+		repo = paths[2]
+		branch = paths[4]
+		rest = "/".join(paths[5:])
+		if parts.netloc == "github.com" and parts.path.endswith(".md"):
+			path = "../github/%s/%s/%s/%s" % (userid, repo, branch, rest)
+			return redirect(path)
+	elif parts.netloc == "gist.github.com" and len(paths) >= 3:
+		userid = paths[1]
+		gistid = paths[2]
+		try:
+			api_url = "https://api.github.com/gists/%s" % gistid
+			r = requests.get(api_url)
+			if r.status_code == 200:
+				json = r.json()
+				files = json.get("files", {})
+				for file in files:
+					raw_url = files.get(file).get('raw_url','')
+					if raw_url.endswith(".md"):
+						raw_paths = raw_url.split("/")
+						path = "../gist/%s" % "/".join(raw_paths[3:])
+						return redirect(path)
+		except:
+			return page_not_found("Could'nt find the url!")
 	return page_not_found("Could'nt find the url!")
