@@ -1,9 +1,40 @@
 <html>
 <head>
   <link href="{{ url_for('static', filename='code.css')}}" rel="stylesheet">
+  <style>
+  a { text-decoration:none; font-size:18px; }
+  /* unvisited link */
+  a:link {
+    color: #777777;
+  }
+  /* visited link */
+  a:visited {
+    color: #777777;
+  }
+  /* mouse over link */
+  a:hover {
+    color: #555555;
+  }
+  /* selected link */
+  a:active {
+    color: #777777;
+  }
+  </style>
   <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
 </head>
 <body>
+  <nav id="menubar" class="navbar navbar-default navbar-fixed-top" data-spy="affix">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        <b color="#777777">mdviewer</b>
+      </a>
+    </div>
+    <div class="collapse navbar-collapse">
+    </div><!-- /.navbar-collapse -->
+  </div>
+  </nav>
+
 {% autoescape off %}
 {{ text }}
 {% endautoescape %}
