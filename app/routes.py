@@ -99,6 +99,9 @@ def create():
 						raw_paths = raw_url.split("/")
 						path = "../gist/%s" % "/".join(raw_paths[3:])
 						return redirect(path)
+			elif r.status_code == 502:
+				path = "../gist/%s/raw" % "/".join(paths[1:])
+				return redirect(path)
 		except:
 			return page_not_found("Could'nt find the url!")
 	return page_not_found("Could'nt find the url!")
