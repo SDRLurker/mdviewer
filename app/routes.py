@@ -39,7 +39,7 @@ def get_md_contents(path, url_tmpl):
                 tab_length = get_space_size(s)
                 html = markdown.markdown(s, extensions=extensions, tab_length=tab_length)
                 soup = BeautifulSoup(html, features="html.parser")
-                is_relative = lambda x: not x.startswith('http')
+                is_relative = lambda x: x and not x.startswith('http')
                 absolute = url[:url.rfind('/')]+'/'
                 for e in soup.find_all("img", src=is_relative):
                     e['src'] = urllib.parse.urljoin(absolute, e['src'])
