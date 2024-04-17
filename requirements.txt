@@ -14,4 +14,4 @@ python-markdown-math==0.6
 requests==2.31.0
 soupsieve==1.9.1
 urllib3==1.26.18
-Werkzeug==2.3.3
+Werkzeug==3.0.1
